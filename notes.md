@@ -1,3 +1,4 @@
+# Outline
 According to some training I once took, you can only get three points in
 a talk. The three things are:
 
@@ -25,3 +26,13 @@ a talk. The three things are:
 - Rust is safe and secure by design - if I were building critical infrastructure code today, rust would be my first choice
 - 
 
+# Questions
+
+1. What do people want to know about Rust?
+    - what it even is
+    - what it's for
+    - whether they should learn it
+
+2. What is my path towards that knowledge?
+    - most folks have a Ruby background, few people have long experience with static typing
+    - 

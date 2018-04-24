@@ -6,49 +6,39 @@ teach you what makes Rust different, and why these differences are important. Th
 going to teach you to write a little bit of Rust, and talk about how to learn more
 or get involved in the community.
 
-Before we can talk about what makes Rust different, we have to talk about memory.
-Most of us here write Ruby (or JavaScript) all day, and these languages both do
-a good job of hiding memory from us. For example, if we have a short Ruby program
-like
+Before we can talk about what makes Rust different, we have to talk about the
+problems Rust was trying to solve: If we oversimplify a bit, we can think of this problem
+as "Ruby is slow and C++ is dangerous."
 
-``` ruby
-puts "What is your name?"
-name = gets.chomp
-puts "Hello #{name}"
-```
+Let's unpack that a bit. _Why_ is Ruby slow? Basically, Ruby is slow because it's
+interpreted, and has a garbage collector. Being interpreted means that Ruby source
+code is translated from Ruby into instructions the CPU can execute while your program
+is running. This is slower than translating the instructions ahead of time, which
+is what happens in compiled languages. Having a runtime garbage collector means
+that sometimes your program pauses while executing to clean up garbage. Basically,
+when you say `foo = "Some awesome string #{my_input}"`, The ruby interpreter allocates
+some RAM for you to store the string in. What happens to that RAM when you're done
+with it? Basically, the garbage collector will sometimes pause your program, find
+all the objects that you don't need any more, and free the RAM for other uses. So
+Ruby is slow for two reasons: It spends some of the time your program is running
+being translated to instructions your computer can run directly, and some of the time
+your program is running cleaning up objects you don't need any more.
 
-We didn't have to think about memory _at all_. We asked Ruby to make some strings
-and store some strings, and it just sort of happened. Somewhere, somebody allocated
-enough bytes of RAM to store these strings, but we didn't really have to think about that.
+Now let's look at the other half of this problem: Why is C++ dangerous. Basically,
+C++ is dangerous because it has no garbage collector. Because it has no garbage collector,
+that means that you manage your own memory. If you need an array of 10 integers, you
+ask the operating system for a place to put such an array, and it gives you back a
+memory address. When you're done with that array, you have to remember to tell
+the operating system you're done with that memory, and then you have to remember
+not to use that address again, and you have to remember how big the array was and
+not use too much memory. If you break these rules, you get "Undefined Behavior,"
+which basically means your program may crash, or may not crash and start doing bad
+things. Heartbleed was a small memory management bug in some important C code.
 
-For example, let's look at this C code:
+Enter Rust: Rust has, among others, the goal of being fast and safe. That is, Rust
 
-``` c
-// thanks, https://stackoverflow.com/a/22065708
-#include <stdio.h>
 
-int main(void) 
-{
-    char name[20]; // what happens if we enter a longer name?
-    printf("Hello. What's your name?\n");
-    fgets(name,20,stdin);
-    printf("Hi there, %s", name);
-    return 0;
-}
-```
 
-Here you can see, we at least had to tell C where to store the string.
 
-``` rust
-use std::io;
-use std::io::prelude::*;
 
-fn main() {
-    let stdin = io::stdin();
-    println!("Hi there, what is your name?");
-    for line in stdin.lock().lines() {
-        println!("{}", line.unwrap());
-    }
-}
-```
 

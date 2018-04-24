@@ -36,6 +36,18 @@ which basically means your program may crash, or may not crash and start doing b
 things. Heartbleed was a small memory management bug in some important C code.
 
 Enter Rust: Rust has, among others, the goal of being fast and safe. That is, Rust
+will keep you from doing bad things with memory, but will also not spend any
+time while your programming is running either cleaning up unused memory or translating
+your program into instructions for your computer. Both of these things were taken
+care of at compile time.
+
+How does Rust achieve both performance and safety? Primarily by innovations in the
+type system.
+
+// honestly here I'm off the rails. This is too much detail that I don't want
+// in the talk. I need to figure out how to convey this without losing people's interest.
+// Maybe we need some code here?
+
 
 
 

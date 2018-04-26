@@ -148,7 +148,53 @@ error: Could not compile `playground`.
 To learn more, run the command again with --verbose.
 ```
 
-Rust is telling us, "Hey wait! `value` is going out of scope before you're done with it."
+Rust is telling us, "Hey wait! `value` is going out of scope before you're done with it.
+The won't work because at runtime, `&value` will be a pointer into freed memory." In contrast,
+Ruby would have fixed your program automatically, but slowed it down while it was running to do
+so, and C++ would have just said, "hey, it's your life pal. Good luck."
+
+// TAKE QUESTIONS HERE FOR A MINUTE
+
+Here I want to pivot and talk about what problems Rust is good at solving. Here are
+some prominent use cases that I think are great examples:
+
+First, there's an anti-spam reverse proxy company. Basically, they make a very thin
+web server that sits in front of your app, and rejects requests that look like spam.
+That means it has to decide, very quickly, whether each request should be let in.
+It is both security and performance critical. They originally built the service
+in Java, but users whose requests arrived during a GC pause would have a bad
+experience. Rust has low, and fairly steady execution times for a given load.
+
+Second, there's `RipGrep`, which is like grep, but easier to work on and
+way, way faster.
+
+Third, there's Firefox. Parts of Firefox are being re-written in Rust, especially
+parts that require parallelization or processing untrusted files. For example,
+`stylo` is a parallel CSS parsing library written in Rust, and Servo is a browser
+engine written in Rust.
+
+
+We'll spend the rest of this talk playing with Rust code, and teaching folks to get
+started. First, go to https://rustup.rs. This Runs a shell script that basically
+detects which version of Rustup you need, and then downloads and installs the
+correct installer. If you want, you can go download the installer yourself:
+https://github.com/rust-lang-nursery/rustup.rs/#other-installation-methods
+
+Once that runs, you can run `cargo --version` to check that things installed
+correctly. Cargo is a bit like bundler and a bit like rake. 
+
+
+
+
+
+
+Sources:
+
+[Writing Parsers Like It's 2017](http://spw17.langsec.org/papers/chifflier-parsing-in-2017.pdf)
+[Mozilla Wiki: Oxidation](https://wiki.mozilla.org/Oxidation#Rust_Strengths)
+
+
+
 
 
 

@@ -18,6 +18,14 @@
         width: 85%;
         height: auto;
       }
+      ol.alpha {
+        list-style-type: upper-alpha;
+      }
+      span.right-answer {
+        font-weight: bold;
+        color: darkred;
+
+      }
     </style>
   </head>
   <body>
@@ -77,6 +85,52 @@ class: center, middle
 
 ---
 
+Look at this beautiful C code:
+
+``` C
+#include <stdio.h>
+
+int main(void) 
+{
+    char name[5] = "Will";
+    int ix = 27 * 24; 
+    printf("And then we have a '%c' \n", name[ix]); // what will this line print? 
+    return 0;
+}
+```
+
+Will it:
+
+<ol class="alpha">
+  <li>Fail to compile</li>
+  <li>Create an error an runtime</li>
+  <li>Always print "And then we have a ''"</li>
+  <li>Sometimes do random different things.</li>
+</ol>
+
+---
+Look at this beautiful C code:
+
+``` C
+#include <stdio.h>
+
+  int main(void) 
+  {
+      char name[5] = "Will";
+      int ix = 27 * 24; 
+      printf("And then we have a '%c' \n", name[ix]); // what will this line print? 
+      return 0;
+  }
+```
+  
+  Will it:
+  
+  <ol class="alpha">
+    <li>Fail to compile</li>
+    <li>Create an error an runtime</li>
+    <li>Always print "And then we have a ''"</li>
+    <li><span class="right-answer">Sometimes do random different things.</span></li>
+  </ol>
 
 ---
     </textarea>

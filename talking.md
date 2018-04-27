@@ -24,6 +24,23 @@ Ruby is slow for two reasons: It spends some of the time your program is running
 being translated to instructions your computer can run directly, and some of the time
 your program is running cleaning up objects you don't need any more.
 
+// OPTIONAL ADDITIONAL DETAIL
+
+To understand Rust, we really want to understand this problem, as it's
+one of the core problems that Rust is trying to solve. Typical programming
+languages have two regions in memory: The Stack and the Heap.
+
+(note that this section will be a little rough since this is not really
+a Ruby talk. If you want better details: 
+[Garbage Collection and the Ruby Heap](https://www.scribd.com/doc/27174770/Garbage-Collection-and-the-Ruby-Heap))
+Let's say you ask the Ruby interpreter to assign a string to the local
+variable `foo`. (You're not using `rubocop` right now so nothing will
+yell at you.) The Ruby interpreter will do a few things:
+
+1. It will put a Ruby object on the heap that represents 
+
+// END OPTIONAL ADDITIONAL DETAIL
+
 Now let's look at the other half of this problem: Why is C++ dangerous. Basically,
 C++ is dangerous because it has no garbage collector. Because it has no garbage collector,
 that means that you manage your own memory. If you need an array of 10 integers, you
@@ -173,6 +190,8 @@ parts that require parallelization or processing untrusted files. For example,
 `stylo` is a parallel CSS parsing library written in Rust, and Servo is a browser
 engine written in Rust.
 
+// TODO: Maybe skip this part - no one at this talk will need help running a shell script.
+
 
 We'll spend the rest of this talk playing with Rust code, and teaching folks to get
 started. First, go to https://rustup.rs. This Runs a shell script that basically
@@ -192,6 +211,9 @@ Sources:
 
 [Writing Parsers Like It's 2017](http://spw17.langsec.org/papers/chifflier-parsing-in-2017.pdf)
 [Mozilla Wiki: Oxidation](https://wiki.mozilla.org/Oxidation#Rust_Strengths)
+[StackOverflow answer Stack and Heap](https://stackoverflow.com/a/80113/3896861)
+[StackOverlow answer on Ruby Local Variables](https://stackoverflow.com/a/13639298/3896861)
+[How Ruby Manages Memory and Garbage Collection](https://www.scribd.com/doc/27174770/Garbage-Collection-and-the-Ruby-Heap)
 
 
 

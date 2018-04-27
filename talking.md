@@ -37,30 +37,77 @@ Let's say you ask the Ruby interpreter to assign a string to the local
 variable `foo`. (You're not using `rubocop` right now so nothing will
 yell at you.) The Ruby interpreter will do a few things:
 
-1. It will put a Ruby object on the heap that represents 
+1. Ruby will allocate a memory for a C struct called RString part of the heap it reserves for this purpose
+2. That C struct has a pointer to the heap, where all the characters in the string will live
+
+But what if there are no slots available for step 1?
+
+Ruby will:
+
+1. Stop your program
+2. Mark all objects that can still be reached.
+3. Free the memory of all other objects.
+
+Then it will attempt step 1 again. If there are still no free slots, Ruby will ask the operating system
+for more memory and try the whole thing again.
+
+This has two basic effects:
+
+1. You don't have to worry about memory.
+2. Sometimes your program just pauses.
 
 // END OPTIONAL ADDITIONAL DETAIL
 
 Now let's look at the other half of this problem: Why is C++ dangerous. Basically,
 C++ is dangerous because it has no garbage collector. Because it has no garbage collector,
 that means that you manage your own memory. If you need an array of 10 integers, you
-ask the operating system for a place to put such an array, and it gives you back a
-memory address. When you're done with that array, you have to remember to tell
-the operating system you're done with that memory, and then you have to remember
-not to use that address again, and you have to remember how big the array was and
-not use too much memory. If you break these rules, you get "Undefined Behavior,"
+call a function that finds a place for 10 integers and gives you back a
+memory address. When you're done with that array, you have to remember to say
+that you're done with the memory, and then you have to remember
+not to use that address again, and you have to remember how big the array was,
+because if you ask for the 11th item in a 10 item array, you'll get something,
+but it won't be what you want. If you break these rules, you get "Undefined Behavior,"
 which basically means your program may crash, or may not crash and start doing bad
 things. Heartbleed was a small memory management bug in some important C code.
 
-Enter Rust: Rust has, among others, the goal of being fast and safe. That is, Rust
-will keep you from doing bad things with memory, but will also not spend any
-time while your programming is running either cleaning up unused memory or translating
-your program into instructions for your computer. Both of these things were taken
-care of at compile time.
+Here's an example. What will this C code do?
+
+``` C
+#include <stdio.h>
+
+int main(void) 
+{
+    char name[5] = "Will";
+    int ix = 27 * 24; 
+    printf("And then we have a '%c' \n", name[ix]); // what will this line print? 
+    return 0;
+}
+```
+
+Will it:
+
+A. Fail to compile
+B. Create an error an runtime
+C. Always print "And then we have a ''"
+D. Sometimes do random different things.
+
+The answer is D. 
+
+Now this is an example of obviously incorrect memory management, but what if `name`
+and `ix` were both defined in other files, or calculated from user input? That
+could be bad.
+
+One of Rust's goals is that unsafe memory things should fail to compile, or, if they
+can't fail to compile, always produce the same error at runtime, so that you never
+have a program that does random, strange things. The innovation of Rust
+is that it has to be very safe without spending much time while your programming
+is running double-checking things for you or cleaning up after you.
 
 How does Rust achieve both performance and safety? That's what we'll learn about
 today. But before I completely lose your interest, let's look at some Rust source
 code.
+
+// TODO: this code sample is now a total non sequitur. Fix.
 
 ``` rust
 fn main() {

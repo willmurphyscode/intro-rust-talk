@@ -109,10 +109,47 @@ code.
 
 // TODO: this code sample is now a total non sequitur. Fix.
 
+Let's see what happens if we try to do the same nonsense in Rust that worked
+in C.
+
 ``` rust
 fn main() {
-    println!("Hello, world!");
+    let name = String::from("Will");
+    let ix : usize = 24 * 27;
+    println!("And then we have a '{}'", name[ix]);
 }
+```
+
+We get:
+
+```
+$ rustc temp.rs -o safe
+error[E0277]: the trait bound `std::string::String: std::ops::Index<usize>` is not satisfied
+ --> temp.rs:4:41
+  |
+4 |     println!("And then we have a '{}'", name[ix]);
+  |                                         ^^^^^^^^ the type `std::string::String` cannot be indexed by `usize`
+  |
+  = help: the trait `std::ops::Index<usize>` is not implemented for `std::string::String`
+
+```
+
+Let's try again:
+
+``` rust
+fn main() {
+    let name = String::from("Will");
+    let ix : usize = 24 * 27;
+    println!("And then we have a '{:?}'", name.chars().nth(ix));
+}
+```
+
+Gives us:
+
+```
+$ rustc temp.rs -o safe
+$ ./safe
+And then we have a 'None'
 ```
 
 A few things are different from Ruby, right? There are braces and semi-colons, and

@@ -85,6 +85,14 @@ class: center, middle
 
 ---
 
+class: middle
+
+# Why are C and C++ Dangerous?
+
+## Manual memory management
+
+---
+
 Look at this beautiful C code:
 
 ``` C
@@ -104,7 +112,7 @@ Will it:
 <ol class="alpha">
   <li>Fail to compile</li>
   <li>Create an error an runtime</li>
-  <li>Always print "And then we have a ''"</li>
+  <li>Always print <code>"And then we have a ''"</code></li>
   <li>Sometimes do random different things.</li>
 </ol>
 
@@ -114,13 +122,13 @@ Look at this beautiful C code:
 ``` C
 #include <stdio.h>
 
-  int main(void) 
-  {
-      char name[5] = "Will";
-      int ix = 27 * 24; 
-      printf("And then we have a '%c' \n", name[ix]); // what will this line print? 
-      return 0;
-  }
+int main(void) 
+{
+    char name[5] = "Will";
+    int ix = 27 * 24; 
+    printf("And then we have a '%c' \n", name[ix]); // what will this line print? 
+    return 0;
+}
 ```
   
   Will it:
@@ -128,9 +136,23 @@ Look at this beautiful C code:
   <ol class="alpha">
     <li>Fail to compile</li>
     <li>Create an error an runtime</li>
-    <li>Always print "And then we have a ''"</li>
+    <li>Always print <code>"And then we have a ''"</code></li>
     <li><span class="right-answer">Sometimes do random different things.</span></li>
   </ol>
+
+---
+
+class: middle
+
+## On my Ubuntu laptop, it prints:
+`And then we have a '�'`
+
+## On my Macbook, it prints:
+`And then we have a '_'`
+
+## And for larger numbers, it prints:
+
+`Segmentation fault (core dumped)`
 
 ---
     </textarea>

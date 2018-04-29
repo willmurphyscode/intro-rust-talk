@@ -41,16 +41,6 @@ or
 
 ---
 
-class: middle
-
-# Agenda
-
-1. How is Rust Different?
-2. Why is Rust Different?
-2. What should you use Rust for?
-3. Some comparisons
-
----
 class: center, middle
 
 # How is rust different?
@@ -153,6 +143,59 @@ class: middle
 ## And for larger numbers, it prints:
 
 `Segmentation fault (core dumped)`
+
+---
+
+class: middle
+
+## Let's try to make the same mistake in Rust:
+
+``` rust
+fn main() {
+    let name = String::from("Will");
+    let ix : usize = 24 * 27;
+    println!("And then we have a '{}'", name[ix]);
+}
+```
+
+This won't compile. Rust doesn't support indexing directly into strings,
+because it's unsafe to do so anyway.
+
+---
+class: middle
+
+## Let's try again:
+
+``` rust
+fn main() {
+    let name = String::from("Will");
+    let ix : usize = 24 * 27;
+    println!("And then we have a '{:?}'", name.chars().nth(ix));
+}
+```
+
+What will this print?
+
+---
+class: middle
+
+## Let's try again:
+
+``` rust
+fn main() {
+    let name = String::from("Will");
+    let ix : usize = 24 * 27;
+    println!("And then we have a '{:?}'", name.chars().nth(ix));
+}
+```
+
+```
+$ rustc temp.rs -o safe
+$ ./safe
+And then we have a 'None'
+```
+
+On every platform, for every value of `ix` greater than 3.
 
 ---
     </textarea>

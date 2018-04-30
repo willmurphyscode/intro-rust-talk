@@ -313,6 +313,7 @@ correctly. Cargo is a bit like bundler and a bit like rake.
 Sources:
 
 [The Rust Programming Language, 2nd Ed.](https://doc.rust-lang.org/book/second-edition)
+[Rust By Example](https://doc.rust-lang.org/rust-by-example)
 [Writing Parsers Like It's 2017](http://spw17.langsec.org/papers/chifflier-parsing-in-2017.pdf)
 [Mozilla Wiki: Oxidation](https://wiki.mozilla.org/Oxidation#Rust_Strengths)
 [StackOverflow answer Stack and Heap](https://stackoverflow.com/a/80113/3896861)

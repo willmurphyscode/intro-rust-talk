@@ -359,37 +359,84 @@ fn main() {
 We need this because there is no garbage collector.
 
 ---
-# The fixed example (one way to fix):
+# One way to fix
 ``` rust
 struct SomeCollection<'a> {
   strings: Vec<&'a str>
 }
 
 impl<'a> SomeCollection<'a> {
-  pub fn new() -> Self {
-      SomeCollection { strings: Vec::new() }
-  }
-  
-  pub fn insert(&mut self, s: &'a str) {
-      self.strings.push(s);
-  }
-  
-  pub fn print_all(&self) {
-      self.strings.iter().for_each(|item| println!("{}", item));
-  }
+  // snip...
 }
 
 fn main() {
-  let mut values : Vec<String> = Vec::new();
-  let mut my_collection = SomeCollection::new();
+  let mut values : Vec<String> = Vec::new(); // liftime of values begins
+  let mut my_collection = SomeCollection::new(); // lifetime 'a begins
 
   (0..10).for_each( |item| {
       let value = format!("value number {}", item + 1);
-      values.push(value);
+      values.push(value); // values owns value, 
+      // so value will have its same lifetime.
   });
   
   values.iter().for_each(|value| my_collection.insert(&value));
   my_collection.print_all();
+} // lifetime 'a ends, then lifetime of values 
+```
+
+---
+# Result and Option Types
+
+## Option type: Operation might return None
+## Result type: Operation might fail
+
+---
+# Option Type
+
+We've already seen an option type:
+
+``` rust
+
+let name = String::from("Will");
+let ix : usize = 24 * 27;
+println!("And then we have a '{:?}'", name.chars().nth(ix));
+
+```
+
+`nth` has the signature:
+
+``` rust
+fn nth(&mut self, n: usize) -> Option<Self::Item>
+```
+And option is:
+``` rust
+pub enum Option<T> {
+    None,
+    Some(T),
+}
+```
+
+Getting the nth item from an iterator might not get any item at all,
+so the function returns an option, which forces the caller to check
+whether there was a value or not.
+
+---
+# Result Type
+
+``` rust
+enum Result<T, E> {
+   Ok(T),
+   Err(E),
+}
+```
+
+``` rust
+// from https://doc.rust-lang.org/rust-by-example/error/result.html
+fn multiply(first_number_str: &str, second_number_str: &str) -> i32 {
+    // Let's try using `unwrap()` to get the number out. Will it bite us?
+    let first_number = first_number_str.parse::<i32>().unwrap();
+    let second_number = second_number_str.parse::<i32>().unwrap();
+    first_number * second_number
 }
 ```
 

@@ -10,6 +10,9 @@ Before we can talk about what makes Rust different, we have to talk about the
 problems Rust was trying to solve: If we oversimplify a bit, we can think of this problem
 as "Ruby is slow and C++ is dangerous."
 
+// TODO: I'd like a little more info on Ruby's translation of source code into
+// executable code here. 
+
 Let's unpack that a bit. _Why_ is Ruby slow? Basically, Ruby is slow because it's
 interpreted, and has a garbage collector. Being interpreted means that Ruby source
 code is translated from Ruby into instructions the CPU can execute while your program
@@ -152,9 +155,14 @@ $ ./safe
 And then we have a 'None'
 ```
 
-A few things are different from Ruby, right? There are braces and semi-colons, and
-`println!()` looks a little weird. That's not a very interesting program,
-so let's look at some more programs.
+Rust knows that there's no 648th element to a 4 letter string, and it gives us "None,"
+without crashing, on every platform. Isn't that nice.
+
+Now that we've got one concrete example, let's talk about some of Rust's other safety
+features. 
+
+The first safety feature we want to talk about are Ownership and Lifetimes. Ownership
+and lifetimes are part of Rust's type system, and they help keep us safe.
 
 // POLL the audience - how many of you have worked in a language with static typing?
 
@@ -162,6 +170,8 @@ so let's look at some more programs.
 
 Where Rust really starts to innovate is the type system. To understand this type system,
 let's talk first talk about what a type system is. 
+
+// TODO might need to add something here.
 
 // ENDIF FEW
 
@@ -214,6 +224,10 @@ impl<'a> SomeCollection<'a> {
     pub fn insert(&mut self, s: &'a str) {
         self.strings.push(s);
     }
+
+    pub fn print_all(&self) {
+        self.strings.iter().for_each(|item| println!("{}", item));
+    }
 }
 
 fn main() {
@@ -254,6 +268,8 @@ The won't work because at runtime, `&value` will be a pointer into freed memory.
 Ruby would have fixed your program automatically, but slowed it down while it was running to do
 so, and C++ would have just said, "hey, it's your life pal. Good luck."
 
+
+
 // TAKE QUESTIONS HERE FOR A MINUTE
 
 Here I want to pivot and talk about what problems Rust is good at solving. Here are
@@ -274,8 +290,11 @@ parts that require parallelization or processing untrusted files. For example,
 `stylo` is a parallel CSS parsing library written in Rust, and Servo is a browser
 engine written in Rust.
 
-// TODO: Maybe skip this part - no one at this talk will need help running a shell script.
+// Some of Rust's safety features
 
+
+
+// TODO: Maybe skip this part - no one at this talk will need help running a shell script.
 
 We'll spend the rest of this talk playing with Rust code, and teaching folks to get
 started. First, go to https://rustup.rs. This Runs a shell script that basically
@@ -293,11 +312,13 @@ correctly. Cargo is a bit like bundler and a bit like rake.
 
 Sources:
 
+[The Rust Programming Language, 2nd Ed.](https://doc.rust-lang.org/book/second-edition)
 [Writing Parsers Like It's 2017](http://spw17.langsec.org/papers/chifflier-parsing-in-2017.pdf)
 [Mozilla Wiki: Oxidation](https://wiki.mozilla.org/Oxidation#Rust_Strengths)
 [StackOverflow answer Stack and Heap](https://stackoverflow.com/a/80113/3896861)
 [StackOverlow answer on Ruby Local Variables](https://stackoverflow.com/a/13639298/3896861)
 [How Ruby Manages Memory and Garbage Collection](https://www.scribd.com/doc/27174770/Garbage-Collection-and-the-Ruby-Heap)
+[The Start of a Long Journey: How Ruby Parses and Compiles Your Code](http://patshaughnessy.net/2012/6/18/the-start-of-a-long-journey-how-ruby-parses-and-compiles-your-code)
 
 
 

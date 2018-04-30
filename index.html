@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Title</title>
+    <title>Rust for Rubyists</title>
     <meta charset="utf-8">
     <style>
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -43,30 +43,31 @@ or
 
 class: center, middle
 
-# How is rust different?
+# What Problem does Rust Solve? 
 
 ---
 
 class: center, middle 
 
-# Ruby is slow and C++ is Dangerous
+# Ruby is slow and C++ is dangerous.
 
 ---
 
 class: middle
 
-# Why Ruby is Slow
+# Why is Ruby Slow?
 
 ## Interpreting at runtime
 
 ---
 
-class: middle
-
-# Why Ruby is Slow
+# Why is Ruby Slow?
 
 ## Garbage.
 
+<img src="assets/garbage_truck.jpg" alt="Image of Garbage Truck" />
+
+Image Credit: Charles01 [<a href="http://www.gnu.org/copyleft/fdl.html">GFDL</a> or <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>], <a href="https://commons.wikimedia.org/wiki/File:Refuse_truck_collecting_refuse_in_Aardenburg_April_2009.jpg">from Wikimedia Commons</a>
 ---
 
 class: center, middle
@@ -195,9 +196,206 @@ $ ./safe
 And then we have a 'None'
 ```
 
-On every platform, for every value of `ix` greater than 3.
+On every platform, for every value of `ix` greater than 3. No crashing.
 
 ---
+class: middle, center
+
+# Rust's Safety Features
+
+--- 
+
+---
+
+# Safety Features of Rust
+
+1. Ownership and Lifetimes
+2. Result Type and Option Type
+3. Exhaustive Matching
+3. panic!()
+4. Send and Sync
+
+---
+
+# Some simple Ruby Code
+
+``` ruby
+class SomeCollection
+  def insert(value)
+    @values ||= []
+    @values << value
+  end
+
+  def print_all
+    @values.each { |v| puts v }
+  end
+end
+
+my_collection = SomeCollection.new
+(1..10).each do |item|
+    value = "value number #{item + 1}"
+    my_collection.insert(value)
+end
+
+my_collection.print_all
+```
+
+Let's think about what the memory is up to.
+
+---
+
+# Some simple Ruby Code
+
+``` ruby
+class SomeCollection
+    def insert(value)
+        @values ||= []
+        @values << value
+    end
+
+    def print_all
+      @values.each { |v| puts v }
+    end
+end
+
+my_collection = SomeCollection.new
+(1..10).each do |item|
+    value = "value number #{item + 1}" # allocate a string
+    my_collection.insert(value) # put a reference to the string in the array
+end
+
+my_collection.print_all # get all the strings from their references
+```
+
+This code needs a garbage collector. Without a garbage collector,
+it would leak memory. 
+
+---
+# Here's a similar program in Rust:
+
+``` rust
+struct SomeCollection<'a> {
+    strings: Vec<&'a str>
+}
+
+impl<'a> SomeCollection<'a> {
+    pub fn new() -> Self {
+        SomeCollection { strings: Vec::new() }
+    }
+    
+    pub fn insert(&mut self, s: &'a str) {
+        self.strings.push(s);
+    }
+
+    pub fn print_all(&self) {
+        self.strings.iter().for_each(|item| println!("{}", item));
+    }
+}
+
+fn main() {
+    let mut my_collection = SomeCollection::new();
+    (0..10).for_each( |item| {
+        let value = format!("value number {}", item + 1);
+        my_collection.insert(&value); // & means insert a "borrow"
+    });
+}
+```
+
+What will happen? 
+
+---
+
+# Compiler Error!
+
+```
+Compiling playground v0.0.1 (file:///playground)
+error[E0597]: `value` does not live long enough
+  --> src/main.rs:19:31
+   |
+19 |         my_collection.insert(&value);
+   |                               ^^^^^ borrowed value does not live long enough
+20 |     });
+   |     - `value` dropped here while still borrowed
+21 | }
+   | - borrowed value needs to live until here
+
+error: aborting due to previous error
+
+error: Could not compile `playground`.
+
+To learn more, run the command again with --verbose.
+```
+
+---
+# Same code, but let's look at types:
+
+``` rust
+struct SomeCollection<'a> { // lifetime param 'a
+    strings: Vec<&'a str> // a vector of strings that live at least as long as 'a
+}
+
+impl<'a> SomeCollection<'a> {
+    pub fn new() -> Self {
+        SomeCollection { strings: Vec::new() }
+    }
+    
+    pub fn insert(&mut self, s: &'a str) { // accept a string that lives as long as 'a
+        self.strings.push(s);
+    }
+
+    pub fn print_all(&self) {
+        self.strings.iter().for_each(|item| println!("{}", item));
+    }
+}
+
+fn main() {
+    let mut my_collection = SomeCollection::new();
+    (0..10).for_each( |item| {
+        let value = format!("value number {}", item + 1);
+        my_collection.insert(&value); // uh-oh! `&value` does not live as long as 'a
+    });
+}
+```
+We need this because there is no garbage collector.
+
+---
+# The fixed example (one way to fix):
+``` rust
+struct SomeCollection<'a> {
+  strings: Vec<&'a str>
+}
+
+impl<'a> SomeCollection<'a> {
+  pub fn new() -> Self {
+      SomeCollection { strings: Vec::new() }
+  }
+  
+  pub fn insert(&mut self, s: &'a str) {
+      self.strings.push(s);
+  }
+  
+  pub fn print_all(&self) {
+      self.strings.iter().for_each(|item| println!("{}", item));
+  }
+}
+
+fn main() {
+  let mut values : Vec<String> = Vec::new();
+  let mut my_collection = SomeCollection::new();
+
+  (0..10).for_each( |item| {
+      let value = format!("value number {}", item + 1);
+      values.push(value);
+  });
+  
+  values.iter().for_each(|value| my_collection.insert(&value));
+  my_collection.print_all();
+}
+```
+
+---
+
+
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
     </script>

@@ -319,6 +319,7 @@ Sources:
 [StackOverflow answer Stack and Heap](https://stackoverflow.com/a/80113/3896861)
 [StackOverlow answer on Ruby Local Variables](https://stackoverflow.com/a/13639298/3896861)
 [How Ruby Manages Memory and Garbage Collection](https://www.scribd.com/doc/27174770/Garbage-Collection-and-the-Ruby-Heap)
+[How the Ruby Interpreter Runs Your Programs](http://blog.honeybadger.io/how-ruby-interprets-and-runs-your-programs/)
 [The Start of a Long Journey: How Ruby Parses and Compiles Your Code](http://patshaughnessy.net/2012/6/18/the-start-of-a-long-journey-how-ruby-parses-and-compiles-your-code)
 
 

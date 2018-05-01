@@ -59,6 +59,10 @@ class: middle
 
 ## Interpreting at runtime
 
+There are a lot of steps between your source code and actually executing instructions on the processor.
+
+In Ruby, lots of them happen while your programming is running.
+
 ---
 
 # Why is Ruby Slow?
@@ -217,6 +221,18 @@ class: middle, center
 
 ---
 
+# Owners and Borrowers
+
+## A Metaphor for Memory Safety
+
+---
+
+# Lifetimes
+
+## Another Metaphor for Memory Safety
+
+---
+
 # Some simple Ruby Code
 
 ``` ruby
@@ -248,14 +264,14 @@ Let's think about what the memory is up to.
 
 ``` ruby
 class SomeCollection
-    def insert(value)
-        @values ||= []
-        @values << value
-    end
+  def insert(value)
+    @values ||= []
+    @values << value
+  end
 
-    def print_all
-      @values.each { |v| puts v }
-    end
+  def print_all
+    @values.each { |v| puts v }
+  end
 end
 
 my_collection = SomeCollection.new

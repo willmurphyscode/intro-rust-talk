@@ -168,8 +168,15 @@ and lifetimes are part of Rust's type system, and they help keep us safe.
 
 // IF FEW
 
-Where Rust really starts to innovate is the type system. To understand this type system,
-let's talk first talk about what a type system is. 
+Let's talk about type checking. Type checking is when the compiler goes through the
+program and makes sure the operations you're trying to perform even make sense.
+For example, in Ruby we could say `nil + 'cheese'` and we would get a no method error
+at runtime. In a statically type language, the compiler would see that expression
+and say, "wait a second, there's no defined way of adding nil to strings. Compiler error!"
+
+Ruby's lak of type checking is both a blessing an a curse. With compile time type checking,
+Ruby would lose much of its ability to metaprogram. However, you would also have a lot
+fewer no method errors at Runtime. 
 
 // TODO might need to add something here.
 
@@ -177,6 +184,15 @@ let's talk first talk about what a type system is.
 
 Now we can talk about what is special about Rust's type system. Rust's type system will
 check not just type, but also lifetime and ownership.
+
+What do we mean by lifetime and ownership? 
+
+Every variable in a Rust program has an owner and a lifetime. The owner keeps us
+from needing a garbage collector - when a variable's owner is freed, we can
+free that variable too. 
+
+The owner of a variable can lend it out. For example, 
+
 
 To look at lifetimes, let's look at a simple Ruby program:
 

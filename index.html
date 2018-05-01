@@ -221,18 +221,6 @@ class: middle, center
 
 ---
 
-# Owners and Borrowers
-
-## A Metaphor for Memory Safety
-
----
-
-# Lifetimes
-
-## Another Metaphor for Memory Safety
-
----
-
 # Some simple Ruby Code
 
 ``` ruby
@@ -283,8 +271,7 @@ end
 my_collection.print_all # get all the strings from their references
 ```
 
-This code needs a garbage collector. Without a garbage collector,
-it would leak memory. 
+Let's think about what the memory is up to.
 
 ---
 # Here's a similar program in Rust:
@@ -312,7 +299,7 @@ fn main() {
     let mut my_collection = SomeCollection::new();
     (0..10).for_each( |item| {
         let value = format!("value number {}", item + 1);
-        my_collection.insert(&value); // & means insert a "borrow"
+        my_collection.insert(&value); // &value means "borrow" value
     });
 }
 ```
@@ -355,7 +342,7 @@ impl<'a> SomeCollection<'a> {
         SomeCollection { strings: Vec::new() }
     }
     
-    pub fn insert(&mut self, s: &'a str) { // accept a string that lives as long as 'a
+    pub fn insert(&mut self, s: &'a str) { // accept a string with lifetime 'a
         self.strings.push(s);
     }
 
@@ -368,11 +355,11 @@ fn main() {
     let mut my_collection = SomeCollection::new();
     (0..10).for_each( |item| {
         let value = format!("value number {}", item + 1);
-        my_collection.insert(&value); // uh-oh! `&value` does not live as long as 'a
+        my_collection.insert(&value); // uh-oh! `&value` does 
+        // not live as long as 'a
     });
 }
 ```
-We need this because there is no garbage collector.
 
 ---
 # One way to fix
@@ -386,21 +373,42 @@ impl<'a> SomeCollection<'a> {
 }
 
 fn main() {
-  let mut values : Vec<String> = Vec::new(); // liftime of values begins
+  let mut values : Vec<String> = Vec::new(); // liftime of `values` begins
   let mut my_collection = SomeCollection::new(); // lifetime 'a begins
 
   (0..10).for_each( |item| {
       let value = format!("value number {}", item + 1);
-      values.push(value); // values owns value, 
-      // so value will have its same lifetime.
+      values.push(value); // `values` owns value, 
+      // so `value` will have its same lifetime.
   });
   
   values.iter().for_each(|value| my_collection.insert(&value));
   my_collection.print_all();
-} // lifetime 'a ends, then lifetime of values 
+  // compiler frees `my_collection` here
+  // compiler frees `values` here
+  // `values` lives longer than `my_colleciton`, so we're goo.
+} 
 ```
+---
+# Owners and Borrowers
+
+## A Metaphor for Memory Safety
+
+1. Every variable has an owner
+2. The variable can be freed when the owner is freed.
+3. The owner can lend the variable out, but only to things that will be freed before it is
+4. 1 mutable borrow **OR** n immutable borrows
 
 ---
+
+# Lifetimes
+
+## Another Metaphor for Memory Safety
+
+1. Borrows are associated with lifetimes.
+
+---
+
 # Result and Option Types
 
 ## Option type: Operation might return None

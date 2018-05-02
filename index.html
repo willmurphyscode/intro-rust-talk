@@ -386,7 +386,7 @@ fn main() {
   my_collection.print_all();
   // compiler frees `my_collection` here
   // compiler frees `values` here
-  // `values` lives longer than `my_colleciton`, so we're goo.
+  // `values` lives longer than `my_collection`, so we're good.
 } 
 ```
 ---
@@ -406,6 +406,8 @@ fn main() {
 ## Another Metaphor for Memory Safety
 
 1. Borrows are associated with lifetimes.
+2. The type `&'a str` for example, beings a borrowed string of lifetime `a`.
+3. You can only make borrows that live long enough.
 
 ---
 
@@ -448,24 +450,83 @@ whether there was a value or not.
 # Result Type
 
 ``` rust
-enum Result<T, E> {
-   Ok(T),
-   Err(E),
+#[must_use]
+pub enum Result<T, E> {
+    Ok(T),
+    Err(E),
 }
 ```
 
 ``` rust
-// from https://doc.rust-lang.org/rust-by-example/error/result.html
-fn multiply(first_number_str: &str, second_number_str: &str) -> i32 {
-    // Let's try using `unwrap()` to get the number out. Will it bite us?
-    let first_number = first_number_str.parse::<i32>().unwrap();
-    let second_number = second_number_str.parse::<i32>().unwrap();
-    first_number * second_number
+    // example from 
+    ///https://doc.rust-lang.org/rust-by-example/std_misc/file/open.html
+    let mut s = String::new();
+    match file.read_to_string(&mut s) {
+        Err(why) => panic!("couldn't read {}: {}", display,
+                                                   why.description()),
+        Ok(_) => print!("{} contains:\n{}", display, s),
+    }
+```
+
+1. If we don't have both branches of the match statement, the code won't compile.
+2. If we ignored the return value of `file.read_to_string(&mut s)`, we would get a warning.
+
+---
+# Exhaustive Matching
+
+``` rust
+pub enum Token {
+    LeftParen,
+    RightParen,
+    Operator(Opcode),
+    Operand(Type),
 }
+
+match get_token() {
+  Token::LeftParen => println!("It was a left paren"),
+  Token::RightParen => println!("It was a right paren"),
+  Token::Operator(opcode) => println!("It was opcode {}", opcode),
+  // COMPILER ERROR! No branch covers Token::Operand
+}
+
 ```
 
 ---
 
+# panic!()
+
+Depending on how things are set up, panic will either:
+
+1. Cause your program to start unwinding and cleaning up, then exit with an error code.
+2. Immediately exit and return an error code.
+
+This means that you can prevent undefined behavior. If your program gets into a situation
+where it can't sensibly continue, you can safely exit, rather than continuing
+and having some sort of security vulnerability or something.
+
+For example, accessing an array out of bounds in C/C++ returns garbage, and
+in Ruby it returns `nil`. It panics in Rust. 
+
+---
+class: center, middle
+# Questions?
+
+We can talk about concurrency after questions, time permitting. 
+
+---
+
+# Sources:
+- [How Ruby Manages Memory and Garbage Collection](https://www.scribd.com/doc/27174770/Garbage-Collection-and-the-Ruby-Heap)
+- [How the Ruby Interpreter Runs Your Programs](http://blog.honeybadger.io/how-ruby-interprets-and-runs-your-programs/)
+- [Mozilla Wiki: Oxidation](https://wiki.mozilla.org/Oxidation#Rust_Strengths)
+- [Rust By Example](https://doc.rust-lang.org/rust-by-example)
+- [The Rust Programming Language, 2nd Ed.](https://doc.rust-lang.org/book/second-edition)
+- [StackOverlow answer on Ruby Local Variables](https://stackoverflow.com/a/13639298/3896861)
+- [StackOverflow answer Stack and Heap](https://stackoverflow.com/a/80113/3896861)
+- [The Start of a Long Journey: How Ruby Parses and Compiles Your Code](http://patshaughnessy.net/2012/6/18/the-start-of-a-long-journey-how-ruby-parses-and-compiles-your-code)
+- [Writing Parsers Like It's 2017](http://spw17.langsec.org/papers/chifflier-parsing-in-2017.pdf)
+
+---
 
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
